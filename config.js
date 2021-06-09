@@ -5,7 +5,7 @@ const config = {
     password: '@blightfuture1',
     database: 'NfaBackend',
   },
-  apeToken: "0x42F8666E87E509258E272D7C233cDE11AF78a8B1",
-  stakingPool: "0x9F8be06E79b370Ff26dFCb4C00D872763B70FB01",
+  apeToken: "0x495f947276749ce646f68ac8c248420045cb7b5e",
+  stakingPool: "0x5735f0c13ddeb10d824437ea01f706d756cdd011",
 }
 module.exports = config

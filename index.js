@@ -12,10 +12,10 @@ const insertStake = require('./dbHelper').insertStake
 const getRewards = require('./dbHelper').getRewards
 
 let web3 = null
-const chainId = '0x4' //for rinkeby
+const chainId = '0x1' //for rinkeby
 
 try {
-  web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/fff5ada5a7dd49b58db10ec9db89d12e'))
+  web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/fff5ada5a7dd49b58db10ec9db89d12e'))
 } catch (err) {
   console.log(err)
 }
