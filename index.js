@@ -14,65 +14,65 @@ const getRewards = require('./dbHelper').getRewards
 let web3 = null
 const chainId = '0x1' //for rinkeby
 
-try {
-  web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/fff5ada5a7dd49b58db10ec9db89d12e'))
-} catch (err) {
-  console.log(err)
-}
+// try {
+//   web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/fff5ada5a7dd49b58db10ec9db89d12e'))
+// } catch (err) {
+//   console.log(err)
+// }
+//
+// if(web3 !== null) {
+//   let stakingPool = new web3.eth.Contract(stakingAbi, stakingAddress)
+//   // staking Operation
+//   let pastStaked = []
+//   setInterval(() => {
+//     stakingPool.getPastEvents('Staked', () => {})
+//       .then((event) => {
+//         if(JSON.stringify(pastStaked) != JSON.stringify(event)) {
+//           let stakedIds = event
+//           if(stakedIds.length === 0) return
+//           stakedIds.forEach((stakedId) => {
+//             insertStake({account: stakedId.returnValues[0], stakedId: stakedId.returnValues[1], chainId: chainId})
+//           });
+//           pastStaked = event
+//         }
+//       })
+//   }, 1000)
+//
+//   // claim baby
+//   let claimedBaby = []
+//   setInterval(() => {
+//     stakingPool.getPastEvents('Claimed', () => {})
+//       .then((event) => {
+//         if(JSON.stringify(claimedBaby) != JSON.stringify(event)) {
+//           let babies = event
+//           console.log(babies)
+//           if(babies.length === 0) return
+//           claimedBaby = event
+//         }
+//       })
+//   }, 1000)
 
-if(web3 !== null) {
-  let stakingPool = new web3.eth.Contract(stakingAbi, stakingAddress)
-  // staking Operation
-  let pastStaked = []
-  setInterval(() => {
-    stakingPool.getPastEvents('Staked', () => {})
-      .then((event) => {
-        if(JSON.stringify(pastStaked) != JSON.stringify(event)) {
-          let stakedIds = event
-          if(stakedIds.length === 0) return
-          stakedIds.forEach((stakedId) => {
-            insertStake({account: stakedId.returnValues[0], stakedId: stakedId.returnValues[1], chainId: chainId})
-          });
-          pastStaked = event
-        }
-      })
-  }, 1000)
-
-  // claim baby
-  let claimedBaby = []
-  setInterval(() => {
-    stakingPool.getPastEvents('Claimed', () => {})
-      .then((event) => {
-        if(JSON.stringify(claimedBaby) != JSON.stringify(event)) {
-          let babies = event
-          console.log(babies)
-          if(babies.length === 0) return
-          claimedBaby = event
-        }
-      })
-  }, 1000)
-
-  // Withdrawn
-  let withdrawn = []
-  setInterval(() => {
-    stakingPool.getPastEvents('Withdrawn', () => {})
-      .then((event) => {
-        if(JSON.stringify(withdrawn) != JSON.stringify(event)) {
-          let withdrawnData = event
-          let accountIds = []
-          if(withdrawnData.length === 0) return
-          withdrawnData.forEach((data) => {
-            if(!accountIds.includes(data.returnValues[0]))
-              accountIds.push(data.returnValues[0])
-          });
-          accountIds.forEach((account) => {
-            getRewards({account_id: account, chain_id: chainId, rewardsAmount: 0})
-          })
-          withdrawn = event
-        }
-      })
-  }, 1000)
-}
+//   // Withdrawn
+//   let withdrawn = []
+//   setInterval(() => {
+//     stakingPool.getPastEvents('Withdrawn', () => {})
+//       .then((event) => {
+//         if(JSON.stringify(withdrawn) != JSON.stringify(event)) {
+//           let withdrawnData = event
+//           let accountIds = []
+//           if(withdrawnData.length === 0) return
+//           withdrawnData.forEach((data) => {
+//             if(!accountIds.includes(data.returnValues[0]))
+//               accountIds.push(data.returnValues[0])
+//           });
+//           accountIds.forEach((account) => {
+//             getRewards({account_id: account, chain_id: chainId, rewardsAmount: 0})
+//           })
+//           withdrawn = event
+//         }
+//       })
+//   }, 1000)
+// }
 
 module.exports = function main (options, cb) {
   // Set default options
