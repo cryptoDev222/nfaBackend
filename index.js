@@ -9,70 +9,78 @@ var bodyParser = require('body-parser')
 const stakingAbi = require('./abis/StakingPool.json')
 const stakingAddress = require('./config').stakingPool
 const insertStake = require('./dbHelper').insertStake
+const withdraw = require('./dbHelper').withdraw
 const getRewards = require('./dbHelper').getRewards
+const getFemale = require('./dbHelper').getFemale
+const claimBaby = require('./dbHelper').claimBaby
 
 let web3 = null
-const chainId = '0x1' //for rinkeby
+const chainId = '0x4' //for rinkeby
 
-// try {
-//   web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/fff5ada5a7dd49b58db10ec9db89d12e'))
-// } catch (err) {
-//   console.log(err)
-// }
+try {
+  web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/fff5ada5a7dd49b58db10ec9db89d12e'))
+} catch (err) {
+  console.log(err)
+}
 //
-// if(web3 !== null) {
-//   let stakingPool = new web3.eth.Contract(stakingAbi, stakingAddress)
-//   // staking Operation
-//   let pastStaked = []
-//   setInterval(() => {
-//     stakingPool.getPastEvents('Staked', () => {})
-//       .then((event) => {
-//         if(JSON.stringify(pastStaked) != JSON.stringify(event)) {
-//           let stakedIds = event
-//           if(stakedIds.length === 0) return
-//           stakedIds.forEach((stakedId) => {
-//             insertStake({account: stakedId.returnValues[0], stakedId: stakedId.returnValues[1], chainId: chainId})
-//           });
-//           pastStaked = event
-//         }
-//       })
-//   }, 1000)
-//
-//   // claim baby
-//   let claimedBaby = []
-//   setInterval(() => {
-//     stakingPool.getPastEvents('Claimed', () => {})
-//       .then((event) => {
-//         if(JSON.stringify(claimedBaby) != JSON.stringify(event)) {
-//           let babies = event
-//           console.log(babies)
-//           if(babies.length === 0) return
-//           claimedBaby = event
-//         }
-//       })
-//   }, 1000)
+if(web3 !== null) {
+  let stakingPool = new web3.eth.Contract(stakingAbi, stakingAddress)
+  // staking Operation
+  let pastStaked = []
+  let events = []
+  setInterval(() => {
+    stakingPool.getPastEvents("allEvents", () => {})
+      .then((event) => {
+        if(JSON.stringify(events) != JSON.stringify(event)) {
 
-//   // Withdrawn
-//   let withdrawn = []
-//   setInterval(() => {
-//     stakingPool.getPastEvents('Withdrawn', () => {})
-//       .then((event) => {
-//         if(JSON.stringify(withdrawn) != JSON.stringify(event)) {
-//           let withdrawnData = event
-//           let accountIds = []
-//           if(withdrawnData.length === 0) return
-//           withdrawnData.forEach((data) => {
-//             if(!accountIds.includes(data.returnValues[0]))
-//               accountIds.push(data.returnValues[0])
-//           });
-//           accountIds.forEach((account) => {
-//             getRewards({account_id: account, chain_id: chainId, rewardsAmount: 0})
-//           })
-//           withdrawn = event
-//         }
-//       })
-//   }, 1000)
-// }
+          let stakedIds = event.filter(eve => eve.event === "Staked")
+
+          if(stakedIds.length !== 0) {
+            stakedIds.forEach((stakedId) => {
+              insertStake({account: stakedId.returnValues[0], stakedId: stakedId.returnValues[1], chainId: chainId})
+            });
+          }
+
+          let withdrawnData = event.filter(eve => eve.event === "Withdrawn")
+          let accountIds = []
+          if(withdrawnData.length !== 0) {
+            withdrawnData.forEach((data) => {
+              if(!accountIds.includes(data.returnValues[0]))
+                accountIds.push(data.returnValues[0])
+            });
+            accountIds.forEach((account) => {
+              withdraw({account_id: account, chain_id: chainId, rewardsAmount: 0})
+            })
+          }
+
+          let babies = event.filter(eve => eve.event === "Claimed")
+
+          if(babies.length !== 0) {
+            babies.forEach(async (baby) => {
+              const account = baby.returnValues[0]
+              const babyId = baby.returnValues[1]
+              let femaleData = await getFemale({account, chainId})
+              femaleData = femaleData[0]['token_id']
+              claimBaby({accountId: account, babyId, chainId, femaleId: femaleData})
+            })
+          }
+
+          let rewards = event.filter(eve => eve.event === "RewardPaid")
+
+          if(rewards.length !== 0) {
+            rewards.forEach(rewards => {
+              const account = rewards.returnValues[0]
+              const rewardsAmount = rewards.returnValues[1]
+
+              getRewards({account, rewardsAmount, chainId})
+            })
+          }
+
+          events = event;
+        }
+      })
+  }, 3000)
+}
 
 module.exports = function main (options, cb) {
   // Set default options

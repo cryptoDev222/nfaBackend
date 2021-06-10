@@ -10,7 +10,7 @@ router.get('/allStaked', async function(req, res) {
     "SELECT COUNT(`gender`) as count, gender from tb_stakes WHERE `account_id`=? and `chain_id`=? GROUP BY `gender`",
     [data.account, data.chainId]
   )
-  console.log(result)
+
   res.json(result)
 })
 // /////////////////////////////////////////

@@ -35,7 +35,6 @@ router.post('/getRewards', async function(req, res) {
 
 // get Rewards List/////////////////////////////
 router.get('/rewardsList', async function(req, res) {
-  console.log(req.query)
   let chainId = req.query.chainId
   let result = await query('Select * from tb_rewards where `chain_id`=?', [chainId])
 

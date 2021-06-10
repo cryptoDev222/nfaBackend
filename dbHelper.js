@@ -30,18 +30,45 @@ async function insertStake(data) {
   return result
 }
 
-async function getRewards(data) {
+async function withdraw(data) {
   let update = await query('Update tb_stakes set `withdraw`=1 where `account_id`=? and `chain_id`=?', [data['account_id'], data['chain_id']])
 
-  let temp = await query('Update tb_rewards set `eth_amount`= `eth_amount` + ? where `account_id`=? and `chain_id`=?', [data['rewardsAmount'], data['account_id'], data['chain_id']])
+  return update
+}
+
+async function getRewards(data) {
+  let temp = await query('Update tb_rewards set `eth_amount`= `eth_amount` + ? where `account_id`=? and `chain_id`=?', [data['rewardsAmount'], data['account'], data['chainId']])
     if(temp.affectedRows == 0)
-      await query('Insert into tb_rewards (`account_id`, `eth_amount`, `chain_id`) VALUES (?, ?, ?)', [data['account_id'], data['rewardsAmount'], data['chain_id']])
+      await query('Insert into tb_rewards (`account_id`, `eth_amount`, `chain_id`) VALUES (?, ?, ?)', [data['account'], data['rewardsAmount'], data['chainId']])
 
   return temp
+}
+
+async function getFemale(data) {
+  let female = await query('Select * from tb_stakes where `account_id`=? and `chain_id`=? and `withdraw`=0 and `gender`=1', [data['account'], data['chainId']])
+
+  return female
+}
+
+async function claimBaby(data) {
+  let babyId = data.babyId
+  let update = await query('Update tb_tokens set `baby_count`=`baby_count` + 1 where `token_id`=?', [data['femaleId']])
+  let temp = await query('Update tb_tokens set `account_id`=? where `token_id`=? and `chain_id`=?', [data['accountId'], babyId, data['chainId']])
+  if(temp.affectedRows == 0)
+    await query('Insert into tb_tokens (`gender`, `token_id`, `account_id`, `chain_id`) VALUES (?, ?, ?, ?)', [3, babyId, data['accountId'], data['chainId']])
+
+  temp = await query('Update tb_rewards set `baby_count`= `baby_count` + 1 where `account_id`=? and `chain_id`=?', [data['accountId'], data['chainId']])
+    if(temp.affectedRows == 0)
+      await query('Insert into tb_rewards (`account_id`, `baby_count`, `chain_id`) VALUES (?, ?, ?)', [data['accountId'], 1, data['chainId']])
+
+  return true
 }
 
 module.exports = {
   query,
   insertStake,
-  getRewards
+  getRewards,
+  withdraw,
+  getFemale,
+  claimBaby
 }

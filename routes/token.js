@@ -73,7 +73,7 @@ router.put('/initiateToken', async function(req, res) {
 // initiate token///////////////////////////
 router.put('/initiateBaby', async function(req, res) {
   let data = req.body
-  console.log(data)
+
   let result = await query("Update tb_tokens set `mother_id`=? where `token_id`=? and `chain_id`=?", [data['motherId'], data['babyId'], data['chainId']])
 
   res.json(result)
