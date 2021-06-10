@@ -15,10 +15,10 @@ const getFemale = require('./dbHelper').getFemale
 const claimBaby = require('./dbHelper').claimBaby
 
 let web3 = null
-const chainId = '0x4' //for rinkeby
+const chainId = '0x1' //for mainnet
 
 try {
-  web3 = new Web3(new Web3.providers.HttpProvider('https://rinkeby.infura.io/v3/fff5ada5a7dd49b58db10ec9db89d12e'))
+  web3 = new Web3(new Web3.providers.HttpProvider('https://mainnet.infura.io/v3/fff5ada5a7dd49b58db10ec9db89d12e'))
 } catch (err) {
   console.log(err)
 }
