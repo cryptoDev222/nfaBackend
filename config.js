@@ -6,6 +6,6 @@ const config = {
     database: 'NfaBackend',
   },
   apeToken: "0x495f947276749ce646f68ac8c248420045cb7b5e",
-  stakingPool: "0x5735f0c13ddeb10d824437ea01f706d756cdd011",
+  stakingPool: "0x07DE828Fe11D8d0fD4985C23a6eD6f71C111472E",
 }
 module.exports = config

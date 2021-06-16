@@ -6,13 +6,15 @@ const pinoHttp = require('pino-http')
 const cors = require('cors')
 const Web3 = require('web3')
 var bodyParser = require('body-parser')
-const stakingAbi = require('./abis/StakingPool.json')
+const stakingAbi = require('./abis/StakingPoolNew.json')
 const stakingAddress = require('./config').stakingPool
 const insertStake = require('./dbHelper').insertStake
 const withdraw = require('./dbHelper').withdraw
 const getRewards = require('./dbHelper').getRewards
 const getFemale = require('./dbHelper').getFemale
 const claimBaby = require('./dbHelper').claimBaby
+const initiateToken = require('./dbHelper').initiateToken
+const initiateBaby = require('./dbHelper').initiateBaby
 
 let web3 = null
 const chainId = '0x1' //for mainnet
@@ -73,6 +75,44 @@ if(web3 !== null) {
               const rewardsAmount = rewards.returnValues[1]
 
               getRewards({account, rewardsAmount, chainId})
+            })
+          }
+
+          let females = event.filter(eve => eve.event === "FemaleInitiated")
+
+          if(females.length !== 0) {
+            females.forEach(female => {
+              let babyCount = female.returnValues[1]
+              let classIndex = babyCount == 6 ? 3 : babyCount == 4 ? 2 : 1
+              initiateToken({classIndex, tokenId: female.returnValues[0], chainId})
+            })
+          }
+
+          let males = event.filter(eve => eve.event === "MaleInitiated")
+
+          if(males.length !== 0) {
+            males.forEach(male => {
+              let multiplier = male.returnValues[1]
+              let classIndex = multiplier == 4 ? 3 : multiplier == 3 ? 2 : 1
+              initiateToken({classIndex, tokenId: male.returnValues[0], chainId})
+            })
+          }
+
+          let initiatedBabies = event.filter(eve => eve.event === "BabyInitiated")
+
+          if(initiatedBabies.length !== 0) {
+            initiatedBabies.forEach(baby => {
+              initiateToken({classIndex: 1, tokenId: baby.returnValues.babyId, chainId})
+            })
+          }
+
+          let babyMatched = event.filter(eve => eve.event === "BabyMatched")
+
+          if(babyMatched.length !== 0) {
+            babyMatched.forEach(matched => {
+              let motherId = matched.returnValues[0]
+              let babyId = matched.returnValues[1]
+              initiateBaby({motherId, babyId, chainId})
             })
           }
 

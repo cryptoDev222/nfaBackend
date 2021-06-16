@@ -64,11 +64,25 @@ async function claimBaby(data) {
   return true
 }
 
+async function initiateToken(data) {
+  let result = await query("Update tb_tokens set `initiate_flag`=1, `class`=? where `token_id`=? and `chain_id`=?", [data['classIndex'], data['tokenId'], data['chainId']])
+
+  return result
+}
+
+async function initiateBaby(data) {
+  let result = await query("Update tb_tokens set `mother_id`=? where `token_id`=? and `chain_id`=?", [data['motherId'], data['babyId'], data['chainId']])
+
+  return result
+}
+
 module.exports = {
   query,
   insertStake,
   getRewards,
   withdraw,
   getFemale,
-  claimBaby
+  claimBaby,
+  initiateToken,
+  initiateBaby
 }
