@@ -19,7 +19,8 @@ router.post('/createtokens', function(req, res) {
 
 // get staked Tokens infomation////////////
 router.get('/stakedTokens', async function(req, res) {
-  let ids = JSON.parse(req.query.ids).join(',')
+  let ids = JSON.parse(req.query.ids).join("','")
+  ids = "'" + ids + "'"
   let chainId = req.query.chainId
   let datas = []
   console.log("query", 'SELECT * from tb_tokens WHERE `token_id` IN (' + ids + ') and `chain_id`=?')
