@@ -137,8 +137,10 @@ router.get('/tokensForInitiate', async function(req, res) {
 
 router.get('/getBabiesForInitiate', async function(req, res) {
   let chainId = req.query.chainId
+  let account = req.query.account
+  console.log(account)
   let datas = []
-  datas = await query('SELECT * from tb_tokens WHERE `chain_id`=? AND `initiate_flag` = 1 AND `mother_id`="" AND `gender` = 3', [chainId])
+  datas = await query('SELECT * from tb_tokens WHERE `chain_id`=? AND `initiate_flag` = 1 AND `mother_id`="" AND `gender` = 3 AND `account_id`=?', [chainId, account])
 
   res.json(datas)
 })
