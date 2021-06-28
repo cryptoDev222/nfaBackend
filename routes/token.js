@@ -9,7 +9,7 @@ router.post('/createtokens', function(req, res) {
   let account = req.body.account
   const forLoop = async _=>{
     for(let i=0; i < data.length; i++) {
-      await query('Insert into tb_tokens (`name`, `gender`, `token_id`, `account_id`, `chain_id`, `traits`) VALUES (?, ?, ?, ?, ?, ?)', [data[i]['name'], data[i]['gender'], data[i]['token_id'], account, data[i]['chainId'], data[i]['traits']])
+      await query('Insert into tb_tokens (`name`, `gender`, `token_id`, `account_id`, `chain_id`, `traits`, `img_url`) VALUES (?, ?, ?, ?, ?, ?, ?)', [data[i]['name'], data[i]['gender'], data[i]['token_id'], account, data[i]['chainId'], data[i]['traits'], data[i]['img_url']])
     }
     res.json({message: "successfully!"})
   }
@@ -53,8 +53,14 @@ router.put('/tokensFromID', async function(req, res) {
   const forLoop = async _=>{
     for(let i=0; i < data.ids.length; i++) {
       let datas = await query("Select * from tb_tokens where `token_id`=? and `chain_id`=?", [data.ids[i], data['chainId']])
-      if( datas.length == 0 )
-        blankData.push(data.ids[i])
+      if( datas.length == 0 ) {
+          blankData.push(data.ids[i])
+      } else {
+        if (datas[0]['img_url'] == null) {
+          if(data.hasOwnProperty('images'))
+            await query("Update tb_tokens set `img_url`=? where `token_id`=? and `chain_id`=?", [data.images[i], data.ids[i], data['chainId']])
+        }
+      }
     }
     res.json({ids: blankData})
   }
