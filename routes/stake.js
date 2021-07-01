@@ -41,7 +41,7 @@ router.get('/stakedList', async function(req, res) {
 // get staked history//////////////////////////
 router.get('/stakeHistory', async function(req, res) {
   let chainId = req.query.chainId
-  let result = await query("Select * from tb_stakes where chain_id=? ORDER BY ID DESC", chainId)
+  let result = await query("Select tb_stakes.*, tb_tokens.name from tb_stakes LEFT JOIN tb_tokens ON tb_stakes.token_id = tb_tokens.token_id where tb_stakes.chain_id=? ORDER BY ID DESC", chainId)
 
   res.json(result)
 })
