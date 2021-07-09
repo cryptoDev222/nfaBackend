@@ -22,12 +22,15 @@ async function query(sql, params) {
 
 async function insertStake(data) {
   let gender = await query("Select * from tb_tokens Where `token_id`=? and `chain_id`=?", [data.stakedId, data.chainId])
+  let temp = await query('Select * from tb_tokens Where `token_id`=? and `chain_id`=? and `withdraw`=0', [data.stakedId, data.chainId])
   gender = gender[0].gender
-  let result = await query(
-    "Insert into tb_stakes(`account_id`, `token_id`, `gender`, `withdraw`, `chain_id`, `stake_date`) VALUES (?, ?, ?, 0, ?, ?)",
-    [data.account, data.stakedId, gender, data.chainId, new Date()]
-  )
-  return result
+  if(temp.length === 0) {
+    let result = await query(
+      "Insert into tb_stakes(`account_id`, `token_id`, `gender`, `withdraw`, `chain_id`, `stake_date`) VALUES (?, ?, ?, 0, ?, ?)",
+      [data.account, data.stakedId, gender, data.chainId, new Date()]
+    )
+    return result
+  }
 }
 
 async function withdraw(data) {
