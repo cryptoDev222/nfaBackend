@@ -31,7 +31,7 @@ router.post('/stakes', async function(req, res) {
 // get staked List//////////////////////////
 router.get('/stakedList', async function(req, res) {
   let chainId = req.query.chainId
-  let result = await query("Select Distinct stakes.*, tokens.baby_count, tokens.name, tokens.img_url from tb_stakes as stakes LEFT JOIN tb_tokens as tokens ON stakes.token_id = tokens.token_id where `withdraw` = 0 AND stakes.chain_id=?", chainId)
+  let result = await query("Select Distinct stakes.*, tokens.baby_count, tokens.name, tokens.img_url from tb_stakes as stakes LEFT JOIN tb_tokens as tokens ON stakes.token_id = tokens.token_id where stakes.withdraw = 0 AND stakes.chain_id=?", chainId)
   let initiatedBabyCount = await query("select COUNT(mother_id) as babyCount, mother_id from tb_tokens where mother_id != '' group by mother_id")
 
   res.json({result: result, babyCount: initiatedBabyCount})
