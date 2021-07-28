@@ -130,7 +130,7 @@ router.get('/tokens/:tokenId', async function(req, res) {
 router.get('/tokensForInitiate', async function(req, res) {
   let chainId = req.query.chainId
   let datas = []
-  datas = await query('SELECT * from tb_tokens WHERE `chain_id`=? AND `initiate_flag` != 1', [chainId])
+  datas = await query('SELECT Distinct * from tb_tokens WHERE `chain_id`=? AND `initiate_flag` != 1', [chainId])
 
   res.json(datas)
 })
