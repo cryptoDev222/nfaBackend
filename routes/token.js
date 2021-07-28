@@ -36,11 +36,11 @@ router.get("/stakedTokens", async function (req, res) {
   let datas = [];
   console.log(
     "query",
-    "SELECT * from tb_tokens WHERE `token_id` IN (" + ids + ") and `chain_id`=?"
+    "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `token_id` IN (" + ids + ") and `chain_id`=?"
   );
   if (ids !== "")
     datas = await query(
-      "SELECT * from tb_tokens WHERE `token_id` IN (" +
+      "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `token_id` IN (" +
         ids +
         ") and `chain_id`=?",
       [chainId]
@@ -127,7 +127,7 @@ router.get("/tokens", async function (req, res) {
   let chainId = req.query.chainId;
   let datas = [];
   datas = await query(
-    "SELECT * from tb_tokens WHERE `account_id` = ? and `chain_id`=?",
+    "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `account_id` = ? and `chain_id`=?",
     [accountId, chainId]
   );
   res.json({ assets: datas });
@@ -139,7 +139,7 @@ router.get("/allTokens", async function (req, res) {
   let chainId = req.query.chainId;
   let datas = [];
   datas = await query(
-    "SELECT * from tb_tokens WHERE `chain_id`=? ORDER BY `initiate_flag` asc, `class` asc",
+    "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `chain_id`=? ORDER BY `initiate_flag` asc, `class` asc",
     [chainId]
   );
   res.json(datas);
@@ -152,7 +152,7 @@ router.get("/initiatedTokens", async function (req, res) {
   let chainId = req.query.chainId;
   let datas = [];
   datas = await query(
-    "SELECT * from tb_tokens WHERE `account_id` = ? and `chain_id`=? and `initiate_flag` = 1",
+    "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `account_id` = ? and `chain_id`=? and `initiate_flag` = 1",
     [accountId, chainId]
   );
   res.json({ assets: datas });
@@ -165,7 +165,7 @@ router.get("/tokens/:tokenId", async function (req, res) {
   let chainId = req.query.chainId;
   let datas = [];
   datas = await query(
-    "SELECT * from tb_tokens WHERE `token_id` = ? and `chain_id`=?",
+    "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `token_id` = ? and `chain_id`=?",
     [tokenId, chainId]
   );
   res.json(datas);
@@ -186,10 +186,9 @@ router.get("/tokensForInitiate", async function (req, res) {
 router.get("/getBabiesForInitiate", async function (req, res) {
   let chainId = req.query.chainId;
   let account = req.query.account;
-  console.log(account);
   let datas = [];
   datas = await query(
-    'SELECT * from tb_tokens WHERE `chain_id`=? AND `initiate_flag` = 1 AND `mother_id`="" AND `gender` = 3 AND `account_id`=?',
+    'SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `chain_id`=? AND `initiate_flag` = 1 AND `mother_id`="" AND `gender` = 3 AND `account_id`=?',
     [chainId, account]
   );
 
