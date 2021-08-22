@@ -9,18 +9,22 @@ router.post("/createtokens", function (req, res) {
   let account = req.body.account;
   const forLoop = async (_) => {
     for (let i = 0; i < data.length; i++) {
-      await query(
-        "Insert into tb_tokens (`name`, `gender`, `token_id`, `account_id`, `chain_id`, `traits`, `img_url`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-        [
-          data[i]["name"],
-          data[i]["gender"],
-          data[i]["token_id"],
-          account,
-          data[i]["chainId"],
-          data[i]["traits"],
-          data[i]["img_url"],
-        ]
-      );
+      const temp = await query("Select * from tb_tokens where `token_id`='?'", [
+        data[i]["token_id"],
+      ]);
+      if (temp.length === 0)
+        await query(
+          "Insert into tb_tokens (`name`, `gender`, `token_id`, `account_id`, `chain_id`, `traits`, `img_url`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+          [
+            data[i]["name"],
+            data[i]["gender"],
+            data[i]["token_id"],
+            account,
+            data[i]["chainId"],
+            data[i]["traits"],
+            data[i]["img_url"],
+          ]
+        );
     }
     res.json({ message: "successfully!" });
   };
@@ -36,7 +40,9 @@ router.get("/stakedTokens", async function (req, res) {
   let datas = [];
   console.log(
     "query",
-    "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `token_id` IN (" + ids + ") and `chain_id`=?"
+    "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `token_id` IN (" +
+      ids +
+      ") and `chain_id`=?"
   );
   if (ids !== "")
     datas = await query(
