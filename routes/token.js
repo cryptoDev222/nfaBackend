@@ -37,24 +37,15 @@ router.get("/stakedTokens", async function (req, res) {
   let ids = JSON.parse(req.query.ids).join("','");
   ids = "'" + ids + "'";
   let chainId = req.query.chainId;
-  let account = req.query.account;
   let datas = [];
-  if (ids !== "") {
-    let tokenIds = JSON.parse(req.query.ids);
-    for (let i = 0; i < tokenIds.length; i++) {
-      let res = await query("Update tb_tokens set account_id=? where token_id=?", [
-        account,
-        tokenIds[i],
-      ]);
-      console.log(res)
-    }
+  console.log(ids);
+  if (ids !== "")
     datas = await query(
       "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `token_id` IN (" +
         ids +
         ") and `chain_id`=?",
       [chainId]
     );
-  }
   res.json(datas);
 });
 // /////////////////////////////////////////
