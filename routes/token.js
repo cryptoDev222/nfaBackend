@@ -45,6 +45,7 @@ router.get("/stakedTokens", async function (req, res) {
         account,
         req.query.ids[i],
       ]);
+      console.log("???");
     }
   datas = await query(
     "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `token_id` IN (" +
