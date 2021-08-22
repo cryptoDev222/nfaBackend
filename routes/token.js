@@ -38,13 +38,12 @@ router.get("/stakedTokens", async function (req, res) {
   ids = "'" + ids + "'";
   let chainId = req.query.chainId;
   let datas = [];
-  console.log(ids);
   if (ids !== "")
     datas = await query(
       "SELECT  Distinct name, gender, token_id, class, initiate_flag, img_url, traits, account_id from tb_tokens WHERE `token_id` IN (" +
         ids +
-        ") and `chain_id`=?",
-      [chainId]
+        ")",
+      []
     );
   res.json(datas);
 });
