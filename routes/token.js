@@ -195,4 +195,16 @@ router.get("/getBabiesForInitiate", async function (req, res) {
   res.json(datas);
 });
 
+router.get("/initalize", async function (req, res) {
+  for(let i=0;i<84;i++){
+    await query("update tb_tokens set class='1' where name = 'Non fungible ape #" + i + "' and gender!=3", [])
+  }
+  for(let i=84;i<167;i++){
+    await query("update tb_tokens set class='1' where name = 'Non fungible ape #" + i + "' and gender!=3", [])
+  }
+  for(let i=167;i<=321;i++){
+    await query("update tb_tokens set class='1' where name = 'Non fungible ape #" + i + "' and gender!=3", [])
+  }
+});
+
 module.exports = router;
