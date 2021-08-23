@@ -196,8 +196,13 @@ router.get("/getBabiesForInitiate", async function (req, res) {
 });
 
 router.get("/initalize", async function (req, res) {
-  for(let i=24;i<89;i++){
-    await query("update tb_tokens set class='0' initiate_flag='0' where name = 'NFA baby #" + i + "' and gender!=3", [])
+  for (let i = 24; i < 89; i++) {
+    await query(
+      "update tb_tokens set class='0', initiate_flag='0' where name = 'NFA baby #" +
+        i +
+        "'",
+      []
+    );
   }
 });
 
