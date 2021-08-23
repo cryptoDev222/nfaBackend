@@ -200,10 +200,10 @@ router.get("/initalize", async function (req, res) {
     await query("update tb_tokens set class='1' where name = 'Non fungible ape #" + i + "' and gender!=3", [])
   }
   for(let i=84;i<167;i++){
-    await query("update tb_tokens set class='1' where name = 'Non fungible ape #" + i + "' and gender!=3", [])
+    await query("update tb_tokens set class='2' where name = 'Non fungible ape #" + i + "' and gender!=3", [])
   }
   for(let i=167;i<=321;i++){
-    await query("update tb_tokens set class='1' where name = 'Non fungible ape #" + i + "' and gender!=3", [])
+    await query("update tb_tokens set class='3' where name = 'Non fungible ape #" + i + "' and gender!=3", [])
   }
 });
 
